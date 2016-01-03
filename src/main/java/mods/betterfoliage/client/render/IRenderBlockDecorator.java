@@ -1,10 +1,10 @@
 package mods.betterfoliage.client.render;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
 
 /** Block rendering handler that is only used under certain conditions
  * @author octarine-noise
