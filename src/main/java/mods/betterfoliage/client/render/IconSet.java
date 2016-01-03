@@ -4,10 +4,13 @@ import mods.betterfoliage.client.util.ResourceUtils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
 
 /** Holds an indexed set of textures
+ * 
+ * Dethraid says: "I don't know enough about the MC source to know how to replace IIcon. Sorry."
+ * 
  * @author octarine-noise
  */
 @SideOnly(Side.CLIENT)
