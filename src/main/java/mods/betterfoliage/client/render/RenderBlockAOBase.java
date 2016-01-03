@@ -1,5 +1,6 @@
 package mods.betterfoliage.client.render;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -641,7 +642,7 @@ public class RenderBlockAOBase extends RenderBlocks {
     }
 	
 	protected int getCameraDistance(int x, int y, int z) {
-		EntityLivingBase camera = Minecraft.getMinecraft().renderViewEntity;
+		EntityLivingBase camera = (EntityLivingBase) Minecraft.getMinecraft().getRenderViewEntity();
 		if (camera == null) return 0;
 		int result = Math.abs(x - MathHelper.floor_double(camera.posX));
 		result += Math.abs(y - MathHelper.floor_double(camera.posY));

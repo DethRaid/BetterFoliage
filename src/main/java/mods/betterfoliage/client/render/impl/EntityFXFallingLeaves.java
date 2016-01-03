@@ -126,8 +126,7 @@ public class EntityFXFallingLeaves extends EntityFX {
         Double3 vec1Rot = vec1.scale(cos[particleRotation]).add(vec2.scale(sin[particleRotation]));
         Double3 vec2Rot = vec1.scale(-sin[particleRotation]).add(vec2.scale(cos[particleRotation]));
         
-        // Maybe this works. Idk. I'm just guessing here
-        renderer.color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha);
+        renderer.setColorRGBA_F(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha);
         
         addVertex(renderer, center.sub(vec1Rot), maxU, maxV);
         addVertex(renderer, center.sub(vec2Rot), maxU, minV);
@@ -136,9 +135,7 @@ public class EntityFXFallingLeaves extends EntityFX {
     }
     
 	protected void addVertex(WorldRenderer renderer, Double3 coord, double u, double v) {
-		// I can't be sure either of these will work, but they seem alright
-	    renderer.pos(coord.x, coord.y, coord.z);
-	    renderer.tex(u, v);
+	    renderer.addVertexWithUV(coord.x, coord.y, coord.z, u, v);
 	}
 	
 	/** Calculates and sets the color of the particle by blending the average color of the block texture with the current biome color.
