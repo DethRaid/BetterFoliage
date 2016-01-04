@@ -39,6 +39,11 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+/**
+ * 
+ * 
+ * @author DethRaid
+ */
 @SideOnly(Side.CLIENT)
 public abstract class BaseTextures {
 	private static final Logger LOG = LogManager.getLogger(BaseTextures.class);
@@ -116,57 +121,14 @@ public abstract class BaseTextures {
     	}
     }
 
-	protected void loopOverStateMappings(Map<ModelResourceLocation, IModel> stateModels,
-			Iterable<Map.Entry<IBlockState, ModelResourceLocation>> stateMappings) {
-		for (Map.Entry<IBlockState, ModelResourceLocation> stateMapping : stateMappings) {
-		    if (textureInfoMap.containsKey(stateMapping.getKey())) {
-		    	continue;
-		    }
-		    
-		    if (checkBlockMatching(stateMapping)) {
-		    	continue;
-		    }
-		    
-		    // this is a blockstate for a grass block, try to find out the base grass top texture
-		    IModel model = stateModels.get(stateMapping.getValue());
-		    for (IModelTextureMapping mapping : mappings) {
-		        String resolvedName = mapping.apply(model);
-		        if (resolvedName != null) {
-		            // store texture location for this blockstate
-		            BetterFoliage.log.debug(String.format("block=%s, texture=%s", stateMapping.getKey().toString(), resolvedName));
-		            textureInfoMap.put(stateMapping.getKey(), infoFactory(resolvedName));
-		            break;
-		        }
-		    }
-		}
-	}
-
-	/**
-	 * Allows subclasses to check 
-	 * 
-	 * @param stateMapping
-	 * @return
-	 */
-	protected boolean checkBlockMatching(Map.Entry<IBlockState, ModelResourceLocation> stateMapping) {
-		return !Config.grass.matchesClass(stateMapping.getKey().getBlock());
-	}
-    
     /**
-     * Factory method that allows child classes to provide their own Info classes
+     * Performs a loop over the state mappings. This loop varies by texture type, but you have to do it, so it's abstract.
      * 
-     * @param resolvedName The name of the info
-     * @return A new BaseInfo (or subclass thereof)
+     * @param stateModels Not sure
+     * @param stateMappings Dunno
      */
-    protected BaseInfo infoFactory(String resolvedName) {
-    	return new BaseInfo(resolvedName);
-    }
-
-	protected Color4 getAverageColor(BaseInfo entry) {
-		ResourceLocation baseTextureLocation = new ResourceLocation(entry.baseTextureName);
-		TextureAtlasSprite baseGrassTexture = blockTextures.getTextureExtry(baseTextureLocation.toString());
-		Color4 averageColor = ResourceUtils.calculateTextureColor(baseGrassTexture);
-		return averageColor;
-	}
+	protected abstract void loopOverStateMappings(Map<ModelResourceLocation, IModel> stateModels,
+			Iterable<Map.Entry<IBlockState, ModelResourceLocation>> stateMappings);
     
     @SubscribeEvent
     public void endTextureReload(TextureStitchEvent.Post event) {

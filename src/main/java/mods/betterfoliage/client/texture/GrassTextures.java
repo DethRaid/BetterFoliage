@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import mods.betterfoliage.BetterFoliage;
 import mods.betterfoliage.client.event.PostLoadModelDefinitionsEvent;
 import mods.betterfoliage.client.render.impl.primitives.Color4;
+import mods.betterfoliage.client.texture.BaseTextures.BaseInfo;
 import mods.betterfoliage.client.texture.models.IModelTextureMapping;
 import mods.betterfoliage.client.util.BFFunctions;
 import mods.betterfoliage.client.util.ResourceUtils;
@@ -40,7 +41,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 @SideOnly(Side.CLIENT)
-public class GrassTextures extends BaseTextures {
+public class GrassTextures extends SimpleTextures {
 	private static final Logger LOG = LogManager.getLogger(GrassTextures.class);
 	
     /** Rendering information for a grass block 
@@ -65,15 +66,12 @@ public class GrassTextures extends BaseTextures {
     	GrassInfo info = grassInfoMap.get(blockState);
     	return (info == null || !info.useTextureColor) ? defaultColor : info.averageColor;
     }
-    
-    @Override
-    protected GrassInfo infoFactory(String resolvedName) {
-    	return new GrassInfo(resolvedName);
-    }
-    
+        
     @SubscribeEvent(priority=EventPriority.HIGH)
     public void handleTextureReload(TextureStitchEvent.Pre event) {
-        if (event.map != blockTextures) return;
+        if (event.map != blockTextures) {
+        	return;
+        }
         
         for (Map.Entry<IBlockState, GrassInfo> entry : grassInfoMap.entrySet()) {
             Color4 averageColor = getAverageColor(entry.getValue());
@@ -83,7 +81,27 @@ public class GrassTextures extends BaseTextures {
     
     @SubscribeEvent
     public void endTextureReload(TextureStitchEvent.Post event) {
-        if (event.map != blockTextures) return;
+        if (event.map != blockTextures) {
+        	return;
+        }
+        
         blockTextures = null;
     }
+
+    @Override
+    protected GrassInfo infoFactory(String resolvedName) {
+    	return new GrassInfo(resolvedName);
+    }
+    
+    @Override
+    protected boolean checkBlockMatching(Map.Entry<IBlockState, ModelResourceLocation> stateMapping) {
+		return !Config.grass.matchesClass(stateMapping.getKey().getBlock());
+	}
+
+    private Color4 getAverageColor(BaseInfo entry) {
+		ResourceLocation baseTextureLocation = new ResourceLocation(entry.baseTextureName);
+		TextureAtlasSprite baseGrassTexture = blockTextures.getTextureExtry(baseTextureLocation.toString());
+		Color4 averageColor = ResourceUtils.calculateTextureColor(baseGrassTexture);
+		return averageColor;
+	}
 }

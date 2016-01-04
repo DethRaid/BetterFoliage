@@ -37,7 +37,7 @@ import com.google.common.collect.Maps;
  * @author octarine-noise
  */
 @SideOnly(Side.CLIENT)
-public class LeafTextures extends BaseTextures {
+public class LeafTextures extends SimpleTextures {
 
     /** Rendering information for a leaf block 
      * @author octarine-noise
@@ -87,17 +87,21 @@ public class LeafTextures extends BaseTextures {
             entry.getValue().particleType = particleTypes.get(baseLeafTexture);
         }
     }
-    
-    @Override
-    protected LeafInfo infoFactory(String resolvedName) {
-    	return new LeafInfo(resolvedName);
-    }
-    
+        
     @SubscribeEvent
     public void endTextureReload(TextureStitchEvent.Post event) {
         if (event.map != blockTextures) return;
         blockTextures = null;
         BetterFoliage.log.info(String.format("Loaded %d leaf particle sets", loadedParticles));
     }
+
+    @Override
+    protected LeafInfo infoFactory(String resolvedName) {
+    	return new LeafInfo(resolvedName);
+    }
     
+    @Override
+	protected boolean checkBlockMatching(Map.Entry<IBlockState, ModelResourceLocation> stateMapping) {
+		return !Config.leaves.matchesClass(stateMapping.getKey().getBlock());
+	}
 }

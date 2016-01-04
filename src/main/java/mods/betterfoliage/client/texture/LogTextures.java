@@ -55,13 +55,30 @@ public class LogTextures extends BaseTextures {
     
     /** Grass block rendering information */
     public Map<IBlockState, LogInfo> logInfoMap = Maps.newHashMap();
-    
+        
+    @SubscribeEvent(priority=EventPriority.HIGH)
+    public void handleTextureReload(TextureStitchEvent.Pre event) {
+        if (event.map != blockTextures) return;
+        
+        for (Map.Entry<IBlockState, LogInfo> entry : logInfoMap.entrySet()) {
+        	ResourceLocation sideTextureLocation = new ResourceLocation(entry.getValue().sideTextureName);
+        	ResourceLocation endTextureLocation = new ResourceLocation(entry.getValue().endTextureName);
+            entry.getValue().sideTexture = blockTextures.getTextureExtry(sideTextureLocation.toString());
+            entry.getValue().endTexture = blockTextures.getTextureExtry(endTextureLocation.toString());
+        }
+    }
+
     @Override
     protected void loopOverStateMappings(Map<ModelResourceLocation, IModel> stateModels,
 			Iterable<Map.Entry<IBlockState, ModelResourceLocation>> stateMappings) {
     	for (Map.Entry<IBlockState, ModelResourceLocation> stateMapping : stateMappings) {
-            if (logInfoMap.containsKey(stateMapping.getKey())) continue;
-            if (!Config.logs.matchesClass(stateMapping.getKey().getBlock())) continue;
+            if (logInfoMap.containsKey(stateMapping.getKey())) {
+            	continue;
+            }
+            
+            if (!Config.logs.matchesClass(stateMapping.getKey().getBlock())) {
+            	continue;
+            }
             
             // this is a blockstate for a log block, try to find out the textures
             IModel model = stateModels.get(stateMapping.getValue());
@@ -84,18 +101,6 @@ public class LogTextures extends BaseTextures {
             	
             	BetterFoliage.log.debug(String.format("block=%s, side=%s, end=%s, dir=%s", stateMapping.getKey().toString(), sideName, endName, info.verticalDir.toString()));
             }
-        }
-    }
-    
-    @SubscribeEvent(priority=EventPriority.HIGH)
-    public void handleTextureReload(TextureStitchEvent.Pre event) {
-        if (event.map != blockTextures) return;
-        
-        for (Map.Entry<IBlockState, LogInfo> entry : logInfoMap.entrySet()) {
-        	ResourceLocation sideTextureLocation = new ResourceLocation(entry.getValue().sideTextureName);
-        	ResourceLocation endTextureLocation = new ResourceLocation(entry.getValue().endTextureName);
-            entry.getValue().sideTexture = blockTextures.getTextureExtry(sideTextureLocation.toString());
-            entry.getValue().endTexture = blockTextures.getTextureExtry(endTextureLocation.toString());
         }
     }
 }
