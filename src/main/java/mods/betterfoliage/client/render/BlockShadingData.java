@@ -73,6 +73,7 @@ public class BlockShadingData implements IShadingData {
         	
 		} catch (NoSuchFieldException e) {
 			LOG.log(Level.FATAL, "Could not find the field I wanted, cannot reasonably continue. Minecraft will crash", e);
+		
 		} catch (SecurityException e) {
 			LOG.log(Level.FATAL, "Security mom is mad. Hiding the closet until the security dad comes home. Cannot reasonably continue. Minecraft will crash", e);
 		}

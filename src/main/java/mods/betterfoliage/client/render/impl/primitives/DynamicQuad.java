@@ -161,15 +161,11 @@ public class DynamicQuad {
 
     /** Render vertex data with renderer
      * @param renderer
+     * 
+     * I fixed this. Bow down before me, for I am the god of reusing code
      */
     public void render(WorldRenderer renderer) {
-        for (int idx = 0; idx < 4; idx++) {
-            Color4 col = color[idx];
-            renderer.setColorRGBA(col.R, col.G, col.B, col.A);
-            renderer.setBrightness(brightness[idx]);
-            renderer.setTextureUV(u[idx], v[idx]);
-            renderer.addVertex(x[idx], y[idx], z[idx]);
-        }
+        render(renderer, new Double3(0, 0, 0));
     }
     
     /** Render vertex data with renderer and offset
@@ -179,10 +175,10 @@ public class DynamicQuad {
     public void render(WorldRenderer renderer, Double3 offset) {
         for (int idx = 0; idx < 4; idx++) {
             Color4 col = color[idx];
-            renderer.setColorRGBA(col.R, col.G, col.B, col.A);
-            renderer.setBrightness(brightness[idx]);
-            renderer.setTextureUV(u[idx], v[idx]);
-            renderer.addVertex(x[idx] + offset.x, y[idx] + offset.y, z[idx] + offset.z);
+            renderer.color(col.R, col.G, col.B, col.A);
+            renderer.putBrightness4(brightness[idx], brightness[idx], brightness[idx], brightness[idx]);	// used to be setBrightness with only one of those
+            renderer.tex(u[idx], v[idx]);
+            renderer.pos(x[idx] + offset.x, y[idx] + offset.y, z[idx] + offset.z);
         }
     }
     

@@ -80,7 +80,7 @@ public class EntityFXRisingSoul extends EntityFX {
                 previous = iter.next();
                 
                 if (idx++ % Config.soulFXTrailDensity == 0) {
-                    renderer.setColorRGBA_F(this.particleRed, this.particleGreen, this.particleBlue, alpha);
+                    renderer.color(this.particleRed, this.particleGreen, this.particleBlue, alpha);	// Used to be colorRGBA_F
                     renderParticleQuad(renderer, partialTickTime, current, previous, vec1, vec2, renderIcon, scale);
                 }
                 if (idx == 1) {
@@ -111,7 +111,9 @@ public class EntityFXRisingSoul extends EntityFX {
     }
     
     protected void addVertex(WorldRenderer renderer, Double3 coord, double u, double v) {
-        renderer.addVertexWithUV(coord.x, coord.y, coord.z, u, v);
+    	// Used to be setVertexWithUv or whatever
+        renderer.pos(coord.x, coord.y, coord.z);
+        renderer.tex(u, v);
     }
     
     @Override

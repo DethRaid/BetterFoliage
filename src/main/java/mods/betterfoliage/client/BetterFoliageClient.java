@@ -95,11 +95,11 @@ public class BetterFoliageClient {
 		MinecraftForge.EVENT_BUS.register(soulParticles);
 		MinecraftForge.EVENT_BUS.register(leafGenerator);
 		MinecraftForge.EVENT_BUS.register(leafRegistry);
-		leafRegistry.leafMappings.add(new VanillaMapping("minecraft:models/block/leaves", "all"));
-		leafRegistry.leafMappings.add(new VanillaMapping("minecraft:models/block/cube", "all"));
+		leafRegistry.mappings.add(new VanillaMapping("minecraft:models/block/leaves", "all"));
+		leafRegistry.mappings.add(new VanillaMapping("minecraft:models/block/cube", "all"));
 		MinecraftForge.EVENT_BUS.register(grassRegistry);
-		grassRegistry.grassMappings.add(new VanillaMapping("minecraft:models/block/grass", "top"));
-		grassRegistry.grassMappings.add(new VanillaMapping("minecraft:models/block/cube_bottom_top", "top"));
+		grassRegistry.mappings.add(new VanillaMapping("minecraft:models/block/grass", "top"));
+		grassRegistry.mappings.add(new VanillaMapping("minecraft:models/block/cube_bottom_top", "top"));
 		MinecraftForge.EVENT_BUS.register(logRegistry);
 		logRegistry.logSideMappings.add(new VanillaMapping("minecraft:models/block/cube_column", "side"));
 		logRegistry.logSideMappings.add(new VanillaMapping("minecraft:models/block/column_side", "side"));

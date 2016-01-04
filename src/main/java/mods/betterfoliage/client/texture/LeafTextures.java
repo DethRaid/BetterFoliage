@@ -37,25 +37,19 @@ import com.google.common.collect.Maps;
  * @author octarine-noise
  */
 @SideOnly(Side.CLIENT)
-public class LeafTextures {
+public class LeafTextures extends BaseTextures {
 
     /** Rendering information for a leaf block 
      * @author octarine-noise
      */
-    public static class LeafInfo {
-        public LeafInfo(String baseTextureName) {
-            this.baseTextureName = baseTextureName;
-        }
-        public String baseTextureName;
-        public TextureAtlasSprite roundLeafTexture;
-        public Color4 averageColor;
+    public static class LeafInfo extends BaseInfo {
+		public TextureAtlasSprite roundLeafTexture;
         public String particleType;
+        
+        public LeafInfo(String baseTextureName) {
+			super(baseTextureName);
+		}
     }
-    
-    /** {@link TextureMap} used in {@link ModelLoader} in the current run */
-    public TextureMap blockTextures;
-    
-    public Collection<IModelTextureMapping> leafMappings = Lists.newLinkedList();
     
     /** Leaf block rendering information */
     public Map<IBlockState, LeafInfo> leafInfoMap = Maps.newHashMap();
@@ -67,46 +61,6 @@ public class LeafTextures {
     public TextureMatcher particleTypes = new TextureMatcher();
     
     public int loadedParticles;
-    
-    @SuppressWarnings("unchecked")
-    @SubscribeEvent
-    public void handlePostLoadModelDefinitions(PostLoadModelDefinitionsEvent event) {
-        blockTextures = event.loader.textureMap;
-        leafInfoMap.clear();
-        particleTextures.clear();
-        EntityFXFallingLeaves.erroredStates.clear();
-        loadedParticles = 0;
-        particleTypes.loadMappings(new ResourceLocation(BetterFoliage.DOMAIN, "leafParticleMappings.cfg"));
-        
-        Map<ModelResourceLocation, IModel> stateModels = CodeRefs.fStateModels.getInstanceField(event.loader);
-        
-        Iterable<Map.Entry<IBlockState, ModelResourceLocation>> stateMappings =
-        Iterables.concat(
-            Iterables.transform(
-                Iterables.transform(
-                    Block.blockRegistry,
-                    BFFunctions.getBlockStateMappings(event.loader.blockModelShapes.getBlockStateMapper().blockStateMap)),
-                BFFunctions.<IBlockState, ModelResourceLocation>asEntries()
-            )
-        );
-        
-        for (Map.Entry<IBlockState, ModelResourceLocation> stateMapping : stateMappings) {
-            if (leafInfoMap.containsKey(stateMapping.getKey())) continue;
-            if (!Config.leaves.matchesClass(stateMapping.getKey().getBlock())) continue;
-            
-            // this is a blockstate for a leaf block, try to find out the base leaf texture
-            IModel model = stateModels.get(stateMapping.getValue());
-            for (IModelTextureMapping leafMapping : leafMappings) {
-                String resolvedName = leafMapping.apply(model);
-                if (resolvedName != null) {
-                    // store (preliminary) render information for this blockstate
-                    BetterFoliage.log.debug(String.format("block=%s, texture=%s", stateMapping.getKey().toString(), resolvedName));
-                    leafInfoMap.put(stateMapping.getKey(), new LeafInfo(resolvedName));
-                    break;
-                }
-            }
-        }
-    }
     
     @SubscribeEvent(priority=EventPriority.HIGH)
     public void handleTextureReload(TextureStitchEvent.Pre event) {
@@ -132,6 +86,11 @@ public class LeafTextures {
             entry.getValue().averageColor = ResourceUtils.calculateTextureColor(baseLeafTexture);
             entry.getValue().particleType = particleTypes.get(baseLeafTexture);
         }
+    }
+    
+    @Override
+    protected LeafInfo infoFactory(String resolvedName) {
+    	return new LeafInfo(resolvedName);
     }
     
     @SubscribeEvent

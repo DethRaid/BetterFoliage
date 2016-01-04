@@ -30,19 +30,21 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 @SideOnly(Side.CLIENT)
-public class LogTextures {
+public class LogTextures extends BaseTextures {
 
     /** Rendering information for a log block 
      * @author octarine-noise
      */
-    public static class LogInfo {
-        public LogInfo(String sideTextureName, String endTextureName) {
-            this.sideTextureName = sideTextureName;
-            this.endTextureName = endTextureName;
-        }
+    public static class LogInfo extends BaseInfo {
         public String sideTextureName, endTextureName;
         public TextureAtlasSprite sideTexture, endTexture;
         public EnumFacing verticalDir;
+        
+        public LogInfo(String sideTextureName, String endTextureName) {
+        	super(null);
+            this.sideTextureName = sideTextureName;
+            this.endTextureName = endTextureName;
+        }
     }
     
     /** {@link TextureMap} used in {@link ModelLoader} in the current run */
@@ -54,25 +56,10 @@ public class LogTextures {
     /** Grass block rendering information */
     public Map<IBlockState, LogInfo> logInfoMap = Maps.newHashMap();
     
-    @SuppressWarnings("unchecked")
-    @SubscribeEvent
-    public void handlePostLoadModelDefinitions(PostLoadModelDefinitionsEvent event) {
-        blockTextures = event.loader.textureMap;
-        logInfoMap.clear();
-        
-        Map<ModelResourceLocation, IModel> stateModels = CodeRefs.fStateModels.getInstanceField(event.loader);
-        
-        Iterable<Map.Entry<IBlockState, ModelResourceLocation>> stateMappings =
-        Iterables.concat(
-            Iterables.transform(
-                Iterables.transform(
-                    Block.blockRegistry,
-                    BFFunctions.getBlockStateMappings(event.loader.blockModelShapes.getBlockStateMapper().blockStateMap)),
-                BFFunctions.<IBlockState, ModelResourceLocation>asEntries()
-            )
-        );
-        
-        for (Map.Entry<IBlockState, ModelResourceLocation> stateMapping : stateMappings) {
+    @Override
+    protected void loopOverStateMappings(Map<ModelResourceLocation, IModel> stateModels,
+			Iterable<Map.Entry<IBlockState, ModelResourceLocation>> stateMappings) {
+    	for (Map.Entry<IBlockState, ModelResourceLocation> stateMapping : stateMappings) {
             if (logInfoMap.containsKey(stateMapping.getKey())) continue;
             if (!Config.logs.matchesClass(stateMapping.getKey().getBlock())) continue;
             
@@ -110,11 +97,5 @@ public class LogTextures {
             entry.getValue().sideTexture = blockTextures.getTextureExtry(sideTextureLocation.toString());
             entry.getValue().endTexture = blockTextures.getTextureExtry(endTextureLocation.toString());
         }
-    }
-    
-    @SubscribeEvent
-    public void endTextureReload(TextureStitchEvent.Post event) {
-        if (event.map != blockTextures) return;
-        blockTextures = null;
     }
 }
