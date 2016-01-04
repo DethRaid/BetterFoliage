@@ -34,3 +34,5 @@ gradle/
 gradlew
 gradlew.bat
 
+bin/
+libs/

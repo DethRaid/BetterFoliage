@@ -146,7 +146,10 @@ public class BlockShadingData implements IShadingData {
     	int index = vertexIndexToFaces[primary.ordinal()][secondary.ordinal()][tertiary.ordinal()];
     	
         float pri = getAoFaceField(aoFaces[primary.ordinal()], aoFaceVertexColorMultiplier, index);
-        if (!useMax) return pri;
+        if (!useMax) {
+        	return pri;
+        }
+        
         float sec = getAoFaceField(aoFaces[primary.ordinal()], aoFaceVertexColorMultiplier, index);
         float ter = getAoFaceField(aoFaces[primary.ordinal()], aoFaceVertexColorMultiplier, index);
         return pri > sec && pri > ter ? pri : (sec > ter ? sec : ter);
