@@ -36,7 +36,7 @@ public class RenderBlockLogs extends BFAbstractRenderer {
     	LogInfo logInfo = BetterFoliageClient.logRegistry.logInfoMap.get(blockState);
     	result &= (logInfo != null && logInfo.sideTexture != null && logInfo.endTexture != null);
     	
-    	return result;
+    	return true;
     }
 
     @Override

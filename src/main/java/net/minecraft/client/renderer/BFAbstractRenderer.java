@@ -1,5 +1,11 @@
 package net.minecraft.client.renderer;
 
+import java.lang.reflect.Field;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import mods.betterfoliage.client.misc.Double3;
 import mods.betterfoliage.client.misc.PerturbationSource;
 import mods.betterfoliage.client.render.BlockShadingData;
@@ -16,7 +22,28 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 @SideOnly(Side.CLIENT)
 public abstract class BFAbstractRenderer extends BlockModelRenderer {
-
+	private static final Logger LOG = LogManager.getLogger(BFAbstractRenderer.class);
+	
+	private static Field vertexTransField_178191_g;
+	private static Field vertexTransField_178200_h;
+	private static Field vertexTransField_178201_i;
+	private static Field vertexTransField_178198_j;
+	
+	static {
+		try {
+			vertexTransField_178191_g = VertexTranslations.class.getDeclaredField("field_178191_g");
+			vertexTransField_178200_h = VertexTranslations.class.getDeclaredField("field_178200_h");
+			vertexTransField_178201_i = VertexTranslations.class.getDeclaredField("field_178201_i");
+			vertexTransField_178198_j = VertexTranslations.class.getDeclaredField("field_178198_j");
+			
+		} catch (NoSuchFieldException e) {
+			LOG.log(Level.FATAL, "Could not find the field I wanted, cannot reasonably continue. Minecraft will crash", e);
+		
+		} catch (SecurityException e) {
+			LOG.log(Level.FATAL, "Security mom is mad. Hiding the closet until the security dad comes home. Cannot reasonably continue. Minecraft will crash", e);
+		}
+	}
+	
 	/** If true, this renderer should be used <i>instead of</i> the normal block rendering,
 	 *  not <i>in addition to</i>.*/
 	public boolean isStandardRenderBlocked = false;
@@ -75,11 +102,25 @@ public abstract class BFAbstractRenderer extends BlockModelRenderer {
         
         if (axis1 == neighborInfo.field_178276_g[0] || axis2 == neighborInfo.field_178276_g[0]) top = true;
         if (axis1 == neighborInfo.field_178276_g[2] || axis2 == neighborInfo.field_178276_g[2]) left = true;
-        
-        if (top && !left) return vertexTrans.field_178191_g;
-        if (top && left) return vertexTrans.field_178200_h;
-        if (!top && left) return vertexTrans.field_178201_i;
-        if (!top && !left) return vertexTrans.field_178198_j;
+
+    	try {
+    		if (top && !left) {
+				return (Integer) vertexTransField_178191_g.get(vertexTrans);
+    		}
+    		if (top && left) {
+    			return (Integer) vertexTransField_178200_h.get(vertexTrans);
+    		}
+    		if (!top && left) {
+    			return (Integer) vertexTransField_178201_i.get(vertexTrans);
+    		}
+    		if (!top && !left) {
+    			return (Integer) vertexTransField_178198_j.get(vertexTrans);
+    		}
+    		
+		} catch (Exception e) {
+			LOG.log(Level.FATAL, "Could not get value from reflected field. Whoops.", e);
+		} 
+		
         return 0;
     }
     

@@ -135,7 +135,6 @@ public class BetterFoliageTransformer extends AbstractClassTransformer {
     
     protected boolean isOptifinePresent() {
         try {
-            @SuppressWarnings("unused")
             Class<?> optifine = Class.forName("optifine.OptiFineClassTransformer");
             return true;
         } catch (ClassNotFoundException e) {

@@ -3,6 +3,7 @@ package mods.betterfoliage.client.util;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
@@ -29,7 +30,7 @@ public class MiscUtils {
     
     @SuppressWarnings("unchecked")
 	public static boolean hasState(IBlockState state, String stateName, Comparable<?> stateValue) {
-    	for (Map.Entry<IProperty, Comparable<?>> entry : (ImmutableSet<Map.Entry<IProperty, Comparable<?>>>) state.getProperties().entrySet()) {
+    	for (Entry<IProperty, Comparable> entry : state.getProperties().entrySet()) {
     		if (entry.getKey().getName().equals(stateName) && entry.getValue().equals(stateValue)) return true;
     	}
     	return false;
@@ -37,7 +38,7 @@ public class MiscUtils {
     
     @SuppressWarnings("unchecked")
 	public static Object getState(IBlockState state, String stateName) {
-    	for (Map.Entry<IProperty, Comparable<?>> entry : (ImmutableSet<Map.Entry<IProperty, Comparable<?>>>) state.getProperties().entrySet()) {
+    	for (Map.Entry<IProperty, Comparable> entry : state.getProperties().entrySet()) {
     		if (entry.getKey().getName().equals(stateName)) return entry.getValue();
     	}
     	return null;

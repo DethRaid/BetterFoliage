@@ -19,7 +19,7 @@ public class BetterFoliage {
 
 	public static final String MOD_ID = "BetterFoliage";
 	public static final String MOD_NAME = "Better Foliage";
-	public static final String MC_VERSIONS = "[1.8]";
+	public static final String MC_VERSIONS = "[1.8.9]";
 	public static final String DEPS = "required-after:Forge@[11.14.0.1292,)";
 	public static final String GUI_FACTORY = "mods.betterfoliage.client.gui.ConfigGuiFactory";
 	public static final String DOMAIN = "betterfoliage";
